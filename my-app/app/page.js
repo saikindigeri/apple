@@ -11,7 +11,7 @@ const collections = [
 const watches = {
   Aluminum: [
     { size: 42, img: '/images/aluminium-42.png' },
-    { size: 46, img: '/images/aluminium-42.png' },
+    { size: 46, img: '/images/aluminium-46.png' },
   ],
   Titanium: [
     { size: 42, img: '/images/titanium-42.png' },
@@ -34,7 +34,8 @@ export default function WatchCustomizer() {
   const [selectedBand, setSelectedBand] = useState(bands[0]);
   const [selectedStyle, setSelectedStyle] = useState(bands[0].styles[0]);
 
-  const watchImage = watches[selectedCase].find((w) => w.size === selectedSize).img;
+  const watchImage = watches[selectedCase].find((w) => w.size === selectedSize).img; 
+  console.log(watchImage)
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
