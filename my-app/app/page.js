@@ -1,5 +1,5 @@
-'use client'
-import { useState } from 'react';
+'use client'  
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 
 const collections = [
@@ -8,16 +8,14 @@ const collections = [
   { name: 'SE' },
 ];
 
-const watches = {
-  Aluminum: [
-    { size: 42, img: '/images/aluminium-42.png' },
-    { size: 46, img: '/images/aluminium-46.png' },
-  ],
-  Titanium: [
-    { size: 42, img: '/images/titanium-42.png' },
-    { size: 46, img: '/images/titanium-46.png' },
-  ],
-};
+const cases = [
+  { type: 'Aluminum', size: 42, img: '/images/aluminium-42.png' },
+  { type: 'Aluminum', size: 46, img: '/images/aluminium-46.png' },
+  { type: 'Titanium', size: 42, img: '/images/titanium-42.png' },
+  { type: 'Titanium', size: 46, img: '/images/titanium-46.png' },
+  { type: 'Aluminum', size: 44, img: '/images/aluminium-44.png' },
+  { type: 'Titanium', size: 44, img: '/images/titanium-44.png' },
+];
 
 const bands = [
   { type: 'Solo Loop', styles: ['Blue', 'Green', 'Black', 'White'] },
@@ -29,13 +27,14 @@ const bands = [
 
 export default function WatchCustomizer() {
   const [selectedCollection, setSelectedCollection] = useState(collections[0].name);
-  const [selectedCase, setSelectedCase] = useState('Aluminum');
-  const [selectedSize, setSelectedSize] = useState(42);
+  const [selectedCase, setSelectedCase] = useState(cases[0]);
   const [selectedBand, setSelectedBand] = useState(bands[0]);
   const [selectedStyle, setSelectedStyle] = useState(bands[0].styles[0]);
+  const scrollRef = useRef(null);
 
-  const watchImage = watches[selectedCase].find((w) => w.size === selectedSize).img; 
-  console.log(watchImage)
+  const handleCaseSelection = (selected) => {
+    setSelectedCase(selected);
+  };
 
   return (
     <div className="p-8 max-w-6xl mx-auto">
@@ -54,46 +53,28 @@ export default function WatchCustomizer() {
         ))}
       </div>
 
-      {/* Watch Preview */}
-      <div className="flex justify-center mb-10">
-        <Image src={watchImage} alt="Watch Preview" width={300} height={300} />
+      {/* Watch Preview and Cases */}
+      <div className="flex justify-center space-x-10 items-center">
+        <div className="grid grid-cols-3 gap-6">
+          {cases.map((watch, index) => (
+            <div
+              key={index}
+              className={`cursor-pointer p-4 border rounded transition-transform ${watch === selectedCase ? 'border-blue-500 transform scale-110' : 'border-gray-300'}`}
+              onClick={() => handleCaseSelection(watch)}
+            >
+              <Image src={watch.img} alt={watch.type} width={150} height={150} className="mx-auto" />
+              <p className="text-center mt-2">{watch.type} {watch.size}mm</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="">
+          <Image src={selectedCase.img} alt="Watch Preview" width={300} height={300} />
+        </div>
       </div>
 
-      {/* Controls */}
-      <div className="grid grid-cols-3 gap-8">
-        {/* Size Selection */}
-        <div>
-          <h2 className="text-lg font-medium mb-4">Size</h2>
-          <div className="flex space-x-4">
-            {[42, 46].map((size) => (
-              <button
-                key={size}
-                className={`px-6 py-2 rounded ${size === selectedSize ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                onClick={() => setSelectedSize(size)}
-              >
-                {size}mm
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Case Selection */}
-        <div>
-          <h2 className="text-lg font-medium mb-4">Case</h2>
-          <div className="flex space-x-4">
-            {['Aluminum', 'Titanium'].map((caseType) => (
-              <button
-                key={caseType}
-                className={`px-6 py-2 rounded ${caseType === selectedCase ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                onClick={() => setSelectedCase(caseType)}
-              >
-                {caseType}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Band Selection */}
+      {/* Band Selection */}
+      <div className="grid grid-cols-2 gap-8 mt-10">
         <div>
           <h2 className="text-lg font-medium mb-4">Band</h2>
           <div className="overflow-x-scroll flex space-x-4 pb-4">
